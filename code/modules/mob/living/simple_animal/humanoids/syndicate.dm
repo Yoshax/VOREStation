@@ -159,6 +159,21 @@
 /mob/living/simple_animal/hostile/syndicate/ranged/space/Process_Spacemove(var/check_drift = 0)
 	return
 
+/*
+/mob/living/simple_animal/hostile/syndicate/ranged/space/grenadier
+	spattack_prob = 100
+	spattack_min_range = 4
+	spattack_max_range = 7
+
+/mob/living/simple_animal/hostile/syndicate/ranged/space/grenadier/SpecialAtkTarget()
+	say("Grenade out!")
+	var /obj/item/weapon/grenade/spawnergrenade/manhacks/F = new  /obj/item/weapon/grenade/spawnergrenade/manhacks(loc)
+	F.activate()
+	F.throw_at(target_mob, 7, 1, src)
+	visible_message("<span class='danger'>[src] throws \a [F] at [target_mob]!</span>")
+	return 1
+*/
+
 /mob/living/simple_animal/hostile/viscerator
 	name = "viscerator"
 	desc = "A small, twin-bladed machine capable of inflicting very deadly lacerations."

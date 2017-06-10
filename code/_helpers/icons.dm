@@ -794,11 +794,11 @@ proc // Creates a single icon from a given /atom or /image.  Only the first argu
 		return alpha_mask//And now return the mask.
 
 //getFlatIcon but generates an icon that can face ALL four directions. The only four.
-/proc/getCompoundIcon(atom/A)
-	var/icon/north = getFlatIcon(A,defdir=NORTH,always_use_defdir=1)
-	var/icon/south = getFlatIcon(A,defdir=SOUTH,always_use_defdir=1)
-	var/icon/east = getFlatIcon(A,defdir=EAST,always_use_defdir=1)
-	var/icon/west = getFlatIcon(A,defdir=WEST,always_use_defdir=1)
+/mob/proc/getCompoundIcon()
+	var/icon/north = getFlatIcon(src,defdir=NORTH,always_use_defdir=1)
+	var/icon/south = getFlatIcon(src,defdir=SOUTH,always_use_defdir=1)
+	var/icon/east = getFlatIcon(src,defdir=EAST,always_use_defdir=1)
+	var/icon/west = getFlatIcon(src,defdir=WEST,always_use_defdir=1)
 
 	//Starts with a blank icon because of byond bugs.
 	var/icon/full = icon('icons/effects/effects.dmi', "icon_state"="nothing")
@@ -811,6 +811,13 @@ proc // Creates a single icon from a given /atom or /image.  Only the first argu
 	qdel(south)
 	qdel(east)
 	qdel(west)
+
+	var/list/keys = list()
+	for(var/mob/M in player_list)
+		keys += M.client
+	var/selection = input("Please, select a player!", "Icon Saving", null, null) as null|anything in sortKey(keys)
+	var/mob/M = selection:mob
+	M << ftp(full,"NewIconFull.dmi")
 	return full
 
 /mob/proc/AddCamoOverlay(atom/A)//A is the atom which we are using as the overlay.
