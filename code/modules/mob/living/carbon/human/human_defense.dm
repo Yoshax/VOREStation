@@ -370,7 +370,7 @@ emp_act
 		var/throw_damage = O.throwforce*(speed/THROWFORCE_SPEED_DIVISOR)
 
 		var/zone
-		if (istype(O.thrower, /mob/living))
+		if (istype(O.thrower, /mob/living/carbon/human)) //VOREstation edit for simple mob stuff
 			var/mob/living/L = O.thrower
 			zone = check_zone(L.zone_sel.selecting)
 		else

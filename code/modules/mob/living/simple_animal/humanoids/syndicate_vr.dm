@@ -1,3 +1,5 @@
+#define SPATTACK_THROW 1
+
 /mob/living/simple_animal/hostile/humanoid
 	name = "hostile duderino"
 	desc = "This is a base mob that you should not be seeing."
@@ -53,6 +55,9 @@
 
 	var/corpse = null
 
+	var/spattack_type = null
+	var/throwing_items = list() //List of items a mob can throw
+
 /mob/living/simple_animal/hostile/humanoid/death()
 	..()
 	if(corpse)
@@ -60,24 +65,45 @@
 	qdel(src)
 	return
 
-/mob/living/simple_animal/hostile/humanoid/ranged/space/shotgun_non_lethal/
+/mob/living/simple_animal/hostile/humanoid/SpecialAtkTarget()
+	if(spattack_type == SPATTACK_THROW)
+		var/obj/to_throw = pick(throwing_items)
+		var/i = throwing_items[to_throw]
+		i--
+		if(i == 0)
+			throwing_items -= throwing_items[to_throw]
+		if(ispath(to_throw, /obj/item/weapon/grenade))
+			var/obj/item/weapon/grenade/G = new to_throw(loc)
+			say("Grenade out!")
+			G.activate()
+			G.throw_at(target_mob, 10, 1, src)
+		to_throw = new to_throw(loc)
+		visible_message("<span class='danger'>[src] throws \a [to_throw] at [target_mob]!</span>")
+		to_throw.throw_at(target_mob, 10, 10, src)
+	return 1
+
+/mob/living/simple_animal/hostile/humanoid/ranged/space/shotgun_non_lethal
 	ranged = 1
 	projectiletype = null
 	casingtype = null
 	projectilesound = 'sound/weapons/shotgun.ogg'
 	loot_list = list(/obj/item/weapon/gun/projectile/shotgun/pump/combat = 100)
 	var/alt_round_types = list(/obj/item/projectile/bullet/shotgun/beanbag, /obj/item/projectile/energy/electrode/stunshot, /obj/item/projectile/energy/flash/flare, /obj/item/projectile/ion)
+	throwing_items = list(/obj/item/weapon/material/kitchen/utensil/knife/boot = 4, /obj/item/weapon/grenade/flashbang = 4, /obj/item/weapon/grenade/smokebomb = 4)
+	spattack_prob = 10
+	spattack_min_range = 5
+	spattack_max_range = 7
+	spattack_type = SPATTACK_THROW
 
 /mob/living/simple_animal/hostile/humanoid/ranged/space/shotgun_non_lethal/ShootTarget()
 	projectiletype = pick(alt_round_types)
-	world << "[projectiletype]"
 	switch(fire_step)
 		if(0)
 			fire_step++
 			return ..()
 		if(1)
 			fire_step = 0
-			visible_message("[src] pumps the shotgun and prepares to fire again.")
+			visible_message("<span class='danger'>[src] pumps the shotgun and prepares to fire again.</span>")
 
 /mob/living/simple_animal/hostile/humanoid/ranged/shotgun/ShootTarget()
 	if(..())
